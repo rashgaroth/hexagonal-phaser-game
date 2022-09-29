@@ -3,20 +3,63 @@
 var game = new Phaser.Game(800, 680, Phaser.AUTO, 'TutContainer', { preload: preload, create: create});
 
 //horizontal tile shaped level
-var levelData=
-[[-1,-1,-1,0,0,0,0,0,0,0,-1,-1,-1],
-[-1,-1,0,0,0,0,0,0,0,0,-1,-1,-1],
-[-1,-1,0,0,0,0,0,0,0,0,0,-1,-1],
-[-1,0,0,0,0,0,0,0,0,0,0,-1,-1],
-[-1,0,0,0,0,0,0,0,0,0,0,0,-1],
-[0,0,0,0,0,0,0,0,0,0,0,0,-1],
-[0,0,0,0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,-1],
-[-1,0,0,0,0,0,0,0,0,0,0,0,-1],
-[-1,0,0,0,0,0,0,0,0,0,0,-1,-1],
-[-1,-1,0,0,0,0,0,0,0,0,0,-1,-1],
-[-1,-1,0,0,0,0,0,0,0,0,-1,-1,-1],
-[-1,-1,-1,0,0,0,0,0,0,0,-1,-1,-1]];
+const levelData = [];
+for (let i = 0; i < 30; i++) {
+    let tempArr = []
+    for (let j = 0; j < 30; j++) {
+        tempArr.push(0)
+    }
+    levelData.push(tempArr);
+}
+// var levelData=
+// [[-1,-1,-1,0,0,0,0,0,0,0,-1,-1,-1],
+// [-1,-1,0,0,0,0,0,0,0,0,-1,-1,-1],
+// [-1,-1,0,0,0,0,0,0,0,0,0,-1,-1],
+// [-1,0,0,0,0,0,0,0,0,0,0,-1,-1],
+// [-1,0,0,0,0,0,0,0,0,0,0,0,-1],
+// [0,0,0,0,0,0,0,0,0,0,0,0,-1],
+// [0,0,0,0,0,0,0,0,0,0,0,0,0],
+// [0,0,0,0,0,0,0,0,0,0,0,0,-1],
+// [-1,0,0,0,0,0,0,0,0,0,0,0,-1],
+// [-1,0,0,0,0,0,0,0,0,0,0,-1,-1],
+// [-1,-1,0,0,0,0,0,0,0,0,0,-1,-1],
+// [-1,-1,0,0,0,0,0,0,0,0,-1,-1,-1],
+// [-1,-1,-1,0,0,0,0,0,0,0,-1,-1,-1]];
+
+// var levelData = [
+// [0,0,0,0,0,0,0,0,0,0,0,0,0],
+// [0,0,0,0,0,0,0,0,0,0,0,0,0],
+// [0,0,0,0,0,0,0,0,0,0,0,0,0],
+// [0,0,0,0,0,0,0,0,0,0,0,0,0],
+// [0,0,0,0,0,0,0,0,0,0,0,0,0],
+// [0,0,0,0,0,0,0,0,0,0,0,0,0],
+// [0,0,0,0,0,0,0,0,0,0,0,0,0],
+// [0,0,0,0,0,0,0,0,0,0,0,0,0],
+// [0,0,0,0,0,0,0,0,0,0,0,0,0],
+// [0,0,0,0,0,0,0,0,0,0,0,0,0],
+// [0,0,0,0,0,0,0,0,0,0,0,0,0],
+// [0,0,0,0,0,0,0,0,0,0,0,0,0],
+// [0,0,0,0,0,0,0,0,0,0,0,0,0],
+// ]
+// levelData = [
+//     [-1,-1,0,0,-1,-1],
+//     [-1,0,0,0,0,-1],
+//     [0,0,0,0,0,0],
+//     [0,0,0,0,0,0],
+//     [-1,0,0,0,0,-1],
+//     [-1,-1,0,0,-1,-1],
+// ]
+// levelData = [
+//     [-1,-1,-1,0,0,0,-1,-1,-1],
+//     [-1,-1,0,0,0,0,0,-1,-1],
+//      [-1,0,0,0,0,0,0,0,-1],
+//       [0,0,0,0,0,0,0,0,0],
+//       [0,0,0,0,0,0,0,0,0],
+//       [0,0,0,0,0,0,0,0,0],
+//     [-1,0,0,0,0,0,0,0,-1],
+//     [-1,-1,0,0,0,0,0,-1,-1],
+//     [-1,-1,-1,0,0,0,-1,-1,-1],
+// ]
 
 var bmpText;
 var hexTileHeight=61;
@@ -77,6 +120,8 @@ function createLevel(){
 function recentreHexGrid(){
     var tile= findCubicHexTile();
     tile=axialToOffset(tile);
+    // console.log(tile, prevTile,"80");
+    // console.log(Phaser.Point.equals(tile,prevTile), "@81");
     if(Phaser.Point.equals(tile,prevTile))return;
     prevTile=tile.clone();
     var hexTile;
@@ -87,19 +132,49 @@ function recentreHexGrid(){
             {
                 if(levelData[i][j]!=-1){
                 hexTile=hexGrid.getByName("tile"+i+"_"+j);
+                // console.log(hexTile.showDifference, "@92");
                 hexTile.getHeuristic(tile.x,tile.y);
-                hexTile.showDifference();
+                // hexTile.showDifference();
+                // getHeuristic = getHeuristic.bind(hexTile);
+                // showDifference = showDifference.bind(hexTile);
+                hexTile.tint=Phaser.Color.interpolateColor('0xff0000','0xffffff',1, hexTile.heuristic,0.2);//'0xffffff';
+                // hexTile.tileTag.visible=true;  
+                // hexTile.tileTag.text = hexTile.heuristic+';'+hexTile.cost;
+                // getHeuristic(tile.x, tile.y);
+                // showDifference();
                 }
             }
         }
         
     }
 }
+
+function showDifference(){
+    console.log(this.heuristic, "@105");
+    if(this.heuristic === 0){
+    }
+    
+}
+
+function getHeuristic(i,j){
+    j=(j-(Math.floor(i/2)));
+    var di=i-this.originali;
+    var dj=j-this.convertedj;
+    var si=Math.sign(di);
+    var sj=Math.sign(dj);
+    var absi=di*si;
+    var absj=dj*sj;
+    if(si!=sj){
+        this.heuristic= Math.max(absi,absj);
+    }else{
+        this.heuristic= (absi+absj);
+    }
+}
 function findCubicHexTile(){
     var pos=game.input.activePointer.position;
     pos.x-=hexGrid.x;
     pos.y-=hexGrid.y;
-    //console.log(pos.x+':'+ pos.y);
+    // console.log(pos.x+':'+ pos.y);
     return screenToAxial(pos);
 }
 function screenToAxial(screenPoint){
